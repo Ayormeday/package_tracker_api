@@ -1,9 +1,10 @@
-import { INextFunction, IRequest, IResponse } from "../types/vendors";
+import { Request, Response, NextFunction } from "express";
+
 const Joi = require("joi");
 Joi.objectId = require("joi-objectid")(Joi);
 
 module.exports = {
-  async LoginValidator(req: IRequest, res: IResponse, next: INextFunction) {
+  async LoginValidator(req: Request, res: Response, next: NextFunction) {
     const schema = Joi.object()
       .keys({
         email: Joi.string().required(),
@@ -19,7 +20,7 @@ module.exports = {
     }
   },
 
-  async CreateAdmin(req: IRequest, res: IResponse, next: INextFunction) {
+  async CreateAdmin(req: Request, res: Response, next: NextFunction) {
     const schema = Joi.object().keys({
       first_name: Joi.string(),
       last_name: Joi.string(),
@@ -37,7 +38,7 @@ module.exports = {
     }
   },
 
-  async RegisterValidator(req: IRequest, res: IResponse, next: INextFunction) {
+  async RegisterValidator(req: Request, res: Response, next: NextFunction) {
     const schema = Joi.object().keys({
       first_name: Joi.string(),
       last_name: Joi.string(),
@@ -55,9 +56,9 @@ module.exports = {
   },
 
   async ChurchOfficerValidator(
-    req: IRequest,
-    res: IResponse,
-    next: INextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
   ) {
     const schema = Joi.object().keys({
       first_name: Joi.string(),
@@ -77,9 +78,9 @@ module.exports = {
   },
 
   async ReadingPlanValidator(
-    req: IRequest,
-    res: IResponse,
-    next: INextFunction
+    req: Request,
+    res: Response,
+    next: NextFunction
   ) {
     const schema = Joi.object().pattern(
       Joi.string(),
