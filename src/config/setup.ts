@@ -8,7 +8,7 @@ if (!MONGODB_URI_ENV) {
   console.error('MONGODB_URI_ENV is not defined. Check your environment configuration.');
 } else {
   mongoose
-    .connect(MONGODB_URI_ENV, { dbName: 'sgbc'})
+    .connect(MONGODB_URI_ENV, { dbName: 'packages'})
     .then(() => {
       console.log('Connected to MongoDB');
     })

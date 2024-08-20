@@ -24,7 +24,7 @@ export interface IPackage extends Document {
 
 const packageSchema = new Schema({
   packageId: { type: String, required: true, unique: true },
-  activeDeliveryId: { type: String, unique: true },
+  activeDeliveryId: { type: String, unique: true, sparse: true },
   description: { type: String, required: true },
   weight: { type: Number, required: true },
   width: { type: Number, required: true },

@@ -37,6 +37,17 @@ export const createPackage = async (req: Request, res: Response): Promise<void> 
   }
 };
 
+// Create many package
+export const createManyPackages = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const packageData = req.body;
+    const newPackage = await PackageService.createManyPackages(packageData);
+    res.status(201).json(newPackage);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
 // Update package
 export const updatePackage = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;

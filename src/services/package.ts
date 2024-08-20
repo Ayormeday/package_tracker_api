@@ -16,6 +16,17 @@ const createPackage = async (packageData: IPackage): Promise<IPackage> => {
   const newPackage = new PackageModel(packageData);
   return await newPackage.save();
 };
+// Create many new packages
+const createManyPackages = async (packagesData: IPackage[]): Promise<IPackage[]> => {
+  const packageIds = packagesData.map(pkg => pkg.packageId);
+  const existingPackages = await PackageModel.find({ packageId: { $in: packageIds } });
+
+  if (existingPackages.length > 0) {
+    throw new Error('Some packageIds already exist: ' + existingPackages.map(pkg => pkg.packageId).join(', '));
+  }
+  const createdPackages = await PackageModel.insertMany(packagesData);
+  return createdPackages;
+};
 
 // Update a package by ID
 const updatePackage = async (
@@ -36,6 +47,7 @@ export {
   getAllPackages,
   getPackageById,
   createPackage,
+  createManyPackages,
   updatePackage,
   deletePackage,
 };
