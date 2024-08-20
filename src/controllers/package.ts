@@ -1,8 +1,7 @@
 import { Request, Response } from "express";
 import * as PackageService from "../services/package";
 
-// Get all packages
-export const getAllPackages = async (req: Request, res: Response): Promise<void> => {
+const getAllPackages = async (req: Request, res: Response): Promise<void> => {
   try {
     const packages = await PackageService.getAllPackages();
     res.status(200).json(packages);
@@ -11,8 +10,7 @@ export const getAllPackages = async (req: Request, res: Response): Promise<void>
   }
 };
 
-// Get package by ID
-export const getPackageById = async (req: Request, res: Response): Promise<void> => {
+const getPackageById = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
     const packageData = await PackageService.getPackageById(id);
@@ -27,7 +25,7 @@ export const getPackageById = async (req: Request, res: Response): Promise<void>
 };
 
 // Create new package
-export const createPackage = async (req: Request, res: Response): Promise<void> => {
+const createPackage = async (req: Request, res: Response): Promise<void> => {
   try {
     const packageData = req.body;
     const newPackage = await PackageService.createPackage(packageData);
@@ -38,7 +36,10 @@ export const createPackage = async (req: Request, res: Response): Promise<void> 
 };
 
 // Create many package
-export const createManyPackages = async (req: Request, res: Response): Promise<void> => {
+const createManyPackages = async (
+  req: Request,
+  res: Response
+): Promise<void> => {
   try {
     const packageData = req.body;
     const newPackage = await PackageService.createManyPackages(packageData);
@@ -49,7 +50,7 @@ export const createManyPackages = async (req: Request, res: Response): Promise<v
 };
 
 // Update package
-export const updatePackage = async (req: Request, res: Response): Promise<void> => {
+const updatePackage = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
     const updateData = req.body;
@@ -64,11 +65,9 @@ export const updatePackage = async (req: Request, res: Response): Promise<void> 
   }
 };
 
-// Delete package
-export const deletePackage = async (req: Request, res: Response): Promise<void> => {
+const deletePackage = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
-    console.log(id)
     const deletedPackage = await PackageService.deletePackage(id);
     if (!deletedPackage) {
       res.status(404).json({ message: "Package not found" });
@@ -78,4 +77,13 @@ export const deletePackage = async (req: Request, res: Response): Promise<void> 
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
+};
+
+export {
+  getAllPackages,
+  getPackageById,
+  createPackage,
+  createManyPackages,
+  updatePackage,
+  deletePackage,
 };

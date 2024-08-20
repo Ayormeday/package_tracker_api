@@ -40,9 +40,7 @@ const createDelivery = async (req: Request, res: Response): Promise<void> => {
     }
 
     const newDelivery = await DeliveryService.createDelivery({ ...deliveryData, packageId });
-    console.log({ newDelivery })
-    const updatedPackage =  await PackageService.updatePackage(packageId, { activeDeliveryId: newDelivery.deliveryId });
-    console.log(updatedPackage)
+    await PackageService.updatePackage(packageId, { activeDeliveryId: newDelivery.deliveryId });
     res.status(201).json(newDelivery);
   } catch (error) {
     res.status(500).json({ message: 'Server error', error });
