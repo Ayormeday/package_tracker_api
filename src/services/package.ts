@@ -33,6 +33,7 @@ const updatePackage = async (
   packageId: string,
   updateData: Partial<IPackage>
 ): Promise<IPackage | null> => {
+  console.log({updateData})
   return await PackageModel.findOneAndUpdate({ packageId }, updateData, {
     new: true,
   });

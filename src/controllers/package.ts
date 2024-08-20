@@ -52,6 +52,8 @@ export const createManyPackages = async (req: Request, res: Response): Promise<v
 export const updatePackage = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
+    console.log(id)
+    console.log( req.body)
     const updateData = req.body;
     const updatedPackage = await PackageService.updatePackage(id, updateData);
     if (!updatedPackage) {
@@ -68,6 +70,7 @@ export const updatePackage = async (req: Request, res: Response): Promise<void> 
 export const deletePackage = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
+    console.log(id)
     const deletedPackage = await PackageService.deletePackage(id);
     if (!deletedPackage) {
       res.status(404).json({ message: "Package not found" });
