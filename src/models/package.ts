@@ -20,6 +20,8 @@ export interface IPackage extends Document {
     lat: number;
     lng: number;
   };
+  createdAt: Date; 
+  updatedAt: Date; 
 }
 
 const packageSchema = new Schema({
@@ -42,6 +44,8 @@ const packageSchema = new Schema({
     lat: { type: Number, required: true },
     lng: { type: Number, required: true },
   },
+}, {
+  timestamps: true 
 });
 
 const PackageModel = model<IPackage>('Package', packageSchema);

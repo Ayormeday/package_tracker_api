@@ -8,6 +8,8 @@ export interface IDelivery extends Document {
   endTime?: Date;
   location: { lat: number; lng: number };
   status: 'open' | 'picked-up' | 'in-transit' | 'delivered' | 'failed';
+  createdAt: Date; 
+  updatedAt: Date; 
 }
 
 const deliverySchema = new Schema({
@@ -25,6 +27,8 @@ const deliverySchema = new Schema({
     enum: ['open', 'picked-up', 'in-transit', 'delivered', 'failed'],
     required: true
   }
+}, {
+  timestamps: true 
 });
 
 const DeliveryModel = model<IDelivery>('Delivery', deliverySchema);
