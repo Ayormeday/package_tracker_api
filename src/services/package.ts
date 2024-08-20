@@ -1,8 +1,18 @@
 import PackageModel, { IPackage } from "../models/package";
 import DeliveryModel, { IDelivery } from "../models/delivery";
 
-const getAllPackages = async (): Promise<IPackage[]> => {
-  return await PackageModel.find();
+const getAllPackages = async (): Promise<{ package: IPackage; delivery?: IDelivery }[]> => {
+  const packages = await PackageModel.find();
+  const packagesWithDelivery = await Promise.all(
+    packages.map(async (pkg) => {
+      let delivery = null;
+      if (pkg.activeDeliveryId) {
+        delivery = await DeliveryModel.findOne({ deliveryId: pkg.activeDeliveryId });
+      }
+      return { package: pkg, delivery };
+    })
+  );
+  return packagesWithDelivery;
 };
 
 const getPackageById = async (
