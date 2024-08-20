@@ -1,13 +1,12 @@
-// src/events/index.ts
 import { Server } from 'socket.io';
-import DeliveryModel, {IDelivery} from '../models/delivery';
-import * as DeliveryService from "../services/delivery"
+import DeliveryModel from '../models/delivery';
+import * as DeliveryService from '../services/delivery';
 
 export const registerSocketEvents = (io: Server) => {
   io.on('connection', (socket) => {
     console.log('New client connected');
 
-    // Join room to track a specific package/delivery
+    // Join room to track a specific delivery
     socket.on('track-delivery', (deliveryId: string) => {
       socket.join(deliveryId);
     });
@@ -35,7 +34,6 @@ export const registerSocketEvents = (io: Server) => {
 
       const delivery: any = await DeliveryService.getDeliveryById(deliveryId);
       
-      delivery.status = status;
       if (delivery) {
         // Update the status and set the appropriate timestamps
         delivery.status = status;
@@ -66,6 +64,6 @@ export const registerSocketEvents = (io: Server) => {
   });
 };
 
-export const sendDeliveryUpdate = (io: Server, deliveryId: string, delivery: any) => {
+const sendDeliveryUpdate = (io: Server, deliveryId: string, delivery: any) => {
   io.to(deliveryId).emit('delivery_updated', { event: 'delivery_updated', delivery });
 };

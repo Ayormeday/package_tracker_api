@@ -1,7 +1,5 @@
 import express from "express";
 import cors from "cors";
-// import session from "express-session";
-// import passport from "passport";
 import routes from "./routes";
 import "./config/setup";
 import http from 'http';

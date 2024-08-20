@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import * as DeliveryService from "../services/delivery";
+import * as PackageService from '../services/package';
 
-// Get all deliveries
-export const getAllDeliveries = async (req: Request, res: Response): Promise<void> => {
+ const getAllDeliveries = async (req: Request, res: Response): Promise<void> => {
   try {
     const deliveries = await DeliveryService.getAllDeliveries();
     res.status(200).json(deliveries);
@@ -11,8 +11,8 @@ export const getAllDeliveries = async (req: Request, res: Response): Promise<voi
   }
 };
 
-// Get delivery by ID
-export const getDeliveryById = async (req: Request, res: Response): Promise<void> => {
+
+ const getDeliveryById = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
     const deliveryData = await DeliveryService.getDeliveryById(id);
@@ -26,19 +26,31 @@ export const getDeliveryById = async (req: Request, res: Response): Promise<void
   }
 };
 
-// Create new delivery
-export const createDelivery = async (req: Request, res: Response): Promise<void> => {
+const createDelivery = async (req: Request, res: Response): Promise<void> => {
   try {
-    const deliveryData = req.body;
-    const newDelivery = await DeliveryService.createDelivery(deliveryData);
+    const { packageId, ...deliveryData } = req.body;
+
+    const pkg: any = await PackageService.getPackageById(packageId);
+    if (!pkg) {
+      res.status(404).json({ message: 'Package not found' });
+    }
+
+    if (pkg.activeDeliveryId) {
+      res.status(400).json({ message: 'Package already has an active delivery' });
+    }
+
+    const newDelivery = await DeliveryService.createDelivery({ ...deliveryData, packageId });
+    console.log({ newDelivery })
+    const updatedPackage =  await PackageService.updatePackage(packageId, { activeDeliveryId: newDelivery.deliveryId });
+    console.log(updatedPackage)
     res.status(201).json(newDelivery);
   } catch (error) {
-    res.status(500).json({ message: "Server error", error });
+    res.status(500).json({ message: 'Server error', error });
   }
 };
 
 // Update delivery
-export const updateDelivery = async (req: Request, res: Response): Promise<void> => {
+ const updateDelivery = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
     const updateData = req.body;
@@ -54,7 +66,7 @@ export const updateDelivery = async (req: Request, res: Response): Promise<void>
 };
 
 // Delete delivery
-export const deleteDelivery = async (req: Request, res: Response): Promise<void> => {
+ const deleteDelivery = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
     const deletedDelivery = await DeliveryService.deleteDelivery(id);
@@ -66,4 +78,12 @@ export const deleteDelivery = async (req: Request, res: Response): Promise<void>
   } catch (error) {
     res.status(500).json({ message: "Server error", error });
   }
-};
+ };
+
+export { 
+  getAllDeliveries,
+  getDeliveryById,
+  createDelivery,
+  updateDelivery,
+  deleteDelivery
+ }

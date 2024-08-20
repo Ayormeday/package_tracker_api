@@ -52,8 +52,6 @@ export const createManyPackages = async (req: Request, res: Response): Promise<v
 export const updatePackage = async (req: Request, res: Response): Promise<void> => {
   const { id } = req.params;
   try {
-    console.log(id)
-    console.log( req.body)
     const updateData = req.body;
     const updatedPackage = await PackageService.updatePackage(id, updateData);
     if (!updatedPackage) {

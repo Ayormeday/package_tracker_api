@@ -12,7 +12,7 @@ export interface IDelivery extends Document {
 
 const deliverySchema = new Schema({
   deliveryId: { type: String, required: true, unique: true },
-  packageId: { type: String, required: true },
+  packageId: { type: String, required: true, unique: true },
   pickupTime: { type: Date },
   startTime: { type: Date },
   endTime: { type: Date },
