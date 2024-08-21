@@ -1,5 +1,6 @@
 import PackageModel, { IPackage } from "../models/package";
 import DeliveryModel, { IDelivery } from "../models/delivery";
+import { generatePackageId } from '../utils/idGenerator';
 
 const getAllPackages = async (): Promise<{ package: IPackage; delivery?: IDelivery }[]> => {
   const packages = await PackageModel.find();
@@ -30,29 +31,12 @@ const getPackageById = async (
   return { package: pkg };
 };
 
-// Create a new package
-const createPackage = async (packageData: IPackage): Promise<IPackage> => {
-  const newPackage = new PackageModel(packageData);
+const createPackage = async (packageData: Partial<IPackage>): Promise<IPackage> => {
+  const packageId = await generatePackageId();
+  const newPackage = new PackageModel({ ...packageData, packageId });
   return await newPackage.save();
 };
-// Create many new packages
-const createManyPackages = async (
-  packagesData: IPackage[]
-): Promise<IPackage[]> => {
-  const packageIds = packagesData.map((pkg) => pkg.packageId);
-  const existingPackages = await PackageModel.find({
-    packageId: { $in: packageIds },
-  });
 
-  if (existingPackages.length > 0) {
-    throw new Error(
-      "Some packageIds already exist: " +
-        existingPackages.map((pkg) => pkg.packageId).join(", ")
-    );
-  }
-  const createdPackages = await PackageModel.insertMany(packagesData);
-  return createdPackages;
-};
 
 const updatePackage = async (
   packageId: string,
@@ -85,7 +69,6 @@ export {
   getAllPackages,
   getPackageById,
   createPackage,
-  createManyPackages,
   updatePackage,
   deletePackage,
 };

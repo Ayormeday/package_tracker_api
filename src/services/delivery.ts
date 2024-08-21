@@ -1,5 +1,6 @@
 import DeliveryModel, { IDelivery } from "../models/delivery";
 import PackageModel from '../models/package';
+import { generateDeliveryId } from '../utils/idGenerator';
 
 const getAllDeliveries = async (): Promise<any[]> => {
   const deliveries = await DeliveryModel.find();
@@ -24,15 +25,22 @@ const getDeliveryById = async (deliveryId: string): Promise<any | null> => {
   return { ...delivery.toObject(), package: pkg };
 };
 
-const createDelivery = async (deliveryData: IDelivery): Promise<IDelivery> => {
-  const existingDelivery = await DeliveryModel.findOne({
-    deliveryId: deliveryData.deliveryId,
+const createDelivery = async (deliveryData: Omit<IDelivery, 'deliveryId'>): Promise<IDelivery> => {
+  const deliveryId = await generateDeliveryId();
+
+  const newDelivery = new DeliveryModel({
+    ...deliveryData,
+    deliveryId,
   });
-  if (existingDelivery) {
-    throw new Error("Delivery with this ID already exists");
-  }
-  const newDelivery = new DeliveryModel(deliveryData);
-  return await newDelivery.save();
+
+  const savedDelivery = await newDelivery.save();
+
+  await PackageModel.findOneAndUpdate(
+    { packageId: deliveryData.packageId },
+    { activeDeliveryId: deliveryId }
+  );
+
+  return savedDelivery;
 };
 
 const updateDelivery = async (

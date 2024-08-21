@@ -4,13 +4,13 @@ import Joi from 'joi';
 export const PackageValidator = {
   async validateCreatePackage(req: Request, res: Response, next: NextFunction) {
     const schema = Joi.object({
-      packageId: Joi.string().required().messages({
-        'string.base': 'Package ID must be a string.',
-        'any.required': 'Package ID is required.',
-      }),
-      activeDeliveryId: Joi.string().optional().messages({
-        'string.base': 'Active Delivery ID must be a string.',
-      }),
+      // packageId: Joi.string().required().messages({
+      //   'string.base': 'Package ID must be a string.',
+      //   'any.required': 'Package ID is required.',
+      // }),
+      // activeDeliveryId: Joi.string().optional().messages({
+      //   'string.base': 'Active Delivery ID must be a string.',
+      // }),
       description: Joi.string().required().messages({
         'string.base': 'Description must be a string.',
         'any.required': 'Description is required.',
@@ -88,13 +88,13 @@ export const PackageValidator = {
   async validateCreateManyPackages(req: Request, res: Response, next: NextFunction) {
     const schema = Joi.array().items(
       Joi.object({
-        packageId: Joi.string().required().messages({
-          'string.base': 'Package ID must be a string.',
-          'any.required': 'Package ID is required.',
-        }),
-        activeDeliveryId: Joi.string().optional().messages({
-          'string.base': 'Active Delivery ID must be a string.',
-        }),
+        // packageId: Joi.string().required().messages({
+        //   'string.base': 'Package ID must be a string.',
+        //   'any.required': 'Package ID is required.',
+        // }),
+        // activeDeliveryId: Joi.string().optional().messages({
+        //   'string.base': 'Active Delivery ID must be a string.',
+        // }),
         description: Joi.string().required().messages({
           'string.base': 'Description must be a string.',
           'any.required': 'Description is required.',
