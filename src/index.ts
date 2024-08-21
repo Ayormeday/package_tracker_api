@@ -8,8 +8,8 @@ import { registerSocketEvents } from './events';
 
 // Configure corsOption to handle CORS error to localhost
 const corsOptions = {
-  origin: 'http://localhost:3000',
-  credentials: true
+  origin: ['http://localhost:3000', 'https://package-delivery-app.vercel.app'],
+  credentials: true,
 };
 
 const app = express();
