@@ -27,7 +27,6 @@ const getDeliveryById = async (deliveryId: string): Promise<any | null> => {
 
 const createDelivery = async (deliveryData: Omit<IDelivery, 'deliveryId'>): Promise<IDelivery> => {
   const deliveryId = await generateDeliveryId();
-
   const newDelivery = new DeliveryModel({
     ...deliveryData,
     deliveryId,
