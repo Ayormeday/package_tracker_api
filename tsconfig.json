@@ -11,11 +11,9 @@
   },
   "types": [
     "node",
+    "jest",
     "express",
     "@types/socket.io",
-    // "passport",
-    // "nodemailer",
-    // "speakeasy",
     "express-session"
   ],
   "include": ["src/**/*.ts"],

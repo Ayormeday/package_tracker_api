@@ -58,10 +58,8 @@ const deletePackage = async (packageId: string): Promise<IPackage | null> => {
     throw new Error("Package not found");
   }
   if (pkg.activeDeliveryId) {
-    // Delete the associated delivery
     await DeliveryModel.findOneAndDelete({ deliveryId: pkg.activeDeliveryId });
   }
-
   return await PackageModel.findOneAndDelete({ packageId });
 };
 
