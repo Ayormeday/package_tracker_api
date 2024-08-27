@@ -1,8 +1,6 @@
-// utils/idGenerator.ts
+import { Model } from 'mongoose';
 import PackageModel from "../models/package";
 import DeliveryModel from "../models/delivery";
-
-import { Model } from 'mongoose';
 
 let lock = { active: false };
 
@@ -30,7 +28,6 @@ const generateId = async (prefix: string, model: Model<any>, idField: string): P
   return getNextId();
 };
 
-// Specific functions for generating Package and Delivery IDs
 export const generatePackageId = async (): Promise<string> => {
   return generateId("PKG", PackageModel, "packageId");
 };

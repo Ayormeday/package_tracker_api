@@ -2,6 +2,56 @@ import { Request, Response, NextFunction } from 'express';
 import Joi from 'joi';
 
 export const PackageValidator = {
+  async LoginValidator(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object()
+      .keys({
+        email: Joi.string().required(),
+        password: Joi.string().min(6).required(),
+      })
+      .with("email", "password");
+
+    const { error } = schema.validate(req.body);
+    if (error && error.details) {
+      return res.status(400).send(`${error.details[0].message}`);
+    } else {
+      return next();
+    }
+  },
+
+  async CreateAdmin(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object().keys({
+      first_name: Joi.string(),
+      last_name: Joi.string(),
+      role: Joi.string(),
+      phone_number: Joi.string().min(3).max(12).required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error && error.details) {
+      return res.status(400).send(`${error.details[0].message}`);
+    } else {
+      return next();
+    }
+  },
+
+  async RegisterValidator(req: Request, res: Response, next: NextFunction) {
+    const schema = Joi.object().keys({
+      first_name: Joi.string(),
+      last_name: Joi.string(),
+      phone_number: Joi.string().min(3).max(12).required(),
+      email: Joi.string().email().required(),
+      password: Joi.string().required(),
+    });
+
+    const { error } = schema.validate(req.body);
+    if (error && error.details) {
+      return res.status(400).send(`${error.details[0].message}`);
+    } else {
+      return next();
+    }
+  },
   async validateCreatePackage(req: Request, res: Response, next: NextFunction) {
     const schema = Joi.object({
       description: Joi.string().required().messages({
