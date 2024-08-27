@@ -9,7 +9,7 @@ router.get("/", (req, res) => {
   res.send("Welcome to the package tracker application!");
 });
 
-router.use(`/auth`, authRoutes);
+router.use(`/api/auth`, authRoutes);
 router.use(`/api/package`, packageRoutes);
 router.use(`/api/delivery`, deliveryRoutes);
 
