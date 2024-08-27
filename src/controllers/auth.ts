@@ -78,7 +78,7 @@ const register: any = async (
 ): Promise<void> => {
   try {
     const { first_name, last_name, email, phone_number, password } = req.body;
-    let role = "user";
+    let role = "customer";
     const { user } = await AuthService.register(
       first_name,
       last_name,
