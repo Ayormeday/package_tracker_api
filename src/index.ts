@@ -2,13 +2,12 @@ import express from "express";
 import cors from "cors";
 import routes from "./routes";
 import "./config/setup";
-import http from 'http';
-import { Server } from 'socket.io';
-import { registerSocketEvents } from './events';
+import http from "http";
+import { Server } from "socket.io";
+import { registerSocketEvents } from "./events";
 
-// Configure corsOption to handle CORS error to localhost
 const corsOptions = {
-  origin: ['http://localhost:3000', 'https://package-delivery-app.vercel.app'],
+  origin: ["http://localhost:3000", process.env.API_URL],
   credentials: true,
 };
 
@@ -16,9 +15,9 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: 'http://localhost:3000',
-    methods: ['GET', 'POST']
-  }
+    origin: "http://localhost:3000",
+    methods: ["GET", "POST"],
+  },
 });
 
 registerSocketEvents(io);
