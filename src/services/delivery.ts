@@ -1,9 +1,9 @@
 import DeliveryModel, { IDelivery } from "../models/delivery";
-import PackageModel from '../models/package';
-import { generateDeliveryId } from '../utils/idGenerator';
-import { Server } from 'socket.io';
+import PackageModel from "../models/package";
+import { generateDeliveryId } from "../utils/idGenerator";
+import { Server } from "socket.io";
 
-let io: Server; 
+let io: Server;
 
 export const setWebSocketServer = (socketServer: Server) => {
   io = socketServer;
@@ -32,7 +32,9 @@ const getDeliveryById = async (deliveryId: string): Promise<any | null> => {
   return { ...delivery.toObject(), package: pkg };
 };
 
-const createDelivery = async (deliveryData: Omit<IDelivery, 'deliveryId'>): Promise<IDelivery> => {
+const createDelivery = async (
+  deliveryData: Omit<IDelivery, "deliveryId">
+): Promise<IDelivery> => {
   const deliveryId = await generateDeliveryId();
   const newDelivery = new DeliveryModel({
     ...deliveryData,
@@ -51,7 +53,7 @@ const createDelivery = async (deliveryData: Omit<IDelivery, 'deliveryId'>): Prom
 
 const updateDelivery = async (
   deliveryId: string,
- status: "open" | "picked-up" | "in-transit" | "delivered" | "failed"
+  status: "open" | "picked-up" | "in-transit" | "delivered" | "failed"
 ): Promise<IDelivery | null> => {
   const updateData: Partial<IDelivery> = { status };
 
@@ -63,14 +65,18 @@ const updateDelivery = async (
     updateData.endTime = new Date();
   }
 
-  const updatedDelivery = await DeliveryModel.findOneAndUpdate({ deliveryId }, updateData, {
-    new: true,
-  });
+  const updatedDelivery = await DeliveryModel.findOneAndUpdate(
+    { deliveryId },
+    updateData,
+    {
+      new: true,
+    }
+  );
 
   if (updatedDelivery && io) {
-    io.to(deliveryId).emit('deliveryStatusUpdate', {
+    io.to(deliveryId).emit("deliveryStatusUpdate", {
       deliveryId: updatedDelivery.deliveryId,
-      status: updatedDelivery.status
+      status: updatedDelivery.status,
     });
   }
 
@@ -90,14 +96,13 @@ const updateDeliveryLocation = async (
   return updatedDelivery;
 };
 
-
 const deleteDelivery = async (
   deliveryId: string
 ): Promise<IDelivery | null> => {
   const delivery = await DeliveryModel.findOne({ deliveryId });
 
   if (!delivery) {
-    throw new Error('Delivery not found');
+    throw new Error("Delivery not found");
   }
   const packageId = delivery.packageId;
   const pkg = await PackageModel.findOne({ packageId });
