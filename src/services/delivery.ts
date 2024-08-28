@@ -2,8 +2,11 @@ import DeliveryModel, { IDelivery } from "../models/delivery";
 import PackageModel from "../models/package";
 import { generateDeliveryId } from "../utils/idGenerator";
 import { Server } from "socket.io";
+import { rateLimiter } from '../utils/rateLimiter';
+
 
 let io: Server;
+const deliveryRateLimiter = rateLimiter(5, 10000);
 
 export const setWebSocketServer = (socketServer: Server) => {
   io = socketServer;
@@ -55,6 +58,10 @@ const updateDelivery = async (
   deliveryId: string,
   status: "open" | "picked-up" | "in-transit" | "delivered" | "failed"
 ): Promise<IDelivery | null> => {
+
+  if (!deliveryRateLimiter(deliveryId)) {
+    throw new Error("Too many requests. Please try again later.");
+  } 
   const updateData: Partial<IDelivery> = { status };
 
   if (status === "picked-up") {
@@ -87,6 +94,10 @@ const updateDeliveryLocation = async (
   deliveryId: string,
   location: { lat: number; lng: number }
 ): Promise<IDelivery | null> => {
+
+  if (!deliveryRateLimiter(deliveryId)) {
+    throw new Error("Too many requests. Please try again later.");
+  }
   const updatedDelivery = await DeliveryModel.findOneAndUpdate(
     { deliveryId },
     { location },
