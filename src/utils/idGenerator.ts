@@ -19,7 +19,6 @@ const generateId = async (prefix: string, model: Model<any>, idField: string): P
         throw new Error("Error generating ID: " + error.message);
       }
     } else {
-      // Wait and retry to get the next ID
       await new Promise(resolve => setTimeout(resolve, 10));
       return getNextId();
     }

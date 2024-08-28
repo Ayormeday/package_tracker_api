@@ -46,9 +46,7 @@ const updateDelivery = async (
   deliveryId: string,
   updateData: Partial<IDelivery>
 ): Promise<IDelivery | null> => {
-  // Check if the status is being updated to "picked-up"
   if (updateData.status === "picked-up") {
-    // Set pickupTime to the current date and time
     updateData.pickupTime = new Date();
   }
   return await DeliveryModel.findOneAndUpdate({ deliveryId }, updateData, {
@@ -64,8 +62,6 @@ const deleteDelivery = async (
   if (!delivery) {
     throw new Error('Delivery not found');
   }
-
-  // Find the package associated with this delivery
   const packageId = delivery.packageId;
   const pkg = await PackageModel.findOne({ packageId });
 

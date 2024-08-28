@@ -8,7 +8,7 @@ import { PackageValidator } from '../middleware/inputValidator';
 
 const router = Router();
 
-router.post("/createSuperAdmin", PackageValidator.CreateAdmin, AuthController.createSuperAdmin); // superAdmin login
+router.post("/createSuperAdmin", PackageValidator.CreateAdmin, AuthController.createSuperAdmin);
 router.post(
   "/createAdmin",
   PackageValidator.CreateAdmin,
