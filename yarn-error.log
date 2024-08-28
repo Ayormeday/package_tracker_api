@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/bin/yarn test auth.test.ts
+  /usr/local/bin/node /usr/local/bin/yarn test
 
 PATH: 
   /usr/local/bin:/System/Cryptexes/App/usr/bin:/usr/bin:/bin:/usr/sbin:/sbin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/local/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/bin:/var/run/com.apple.security.cryptexd/codex.system/bootstrap/usr/appleinternal/bin:/Users/ayomide/.nvm:/Users/ayomide/.yarn/bin:/Users/ayomide/.config/yarn/global/node_modules/.bin:/opt/homebrew/bin:/opt/homebrew/sbin
@@ -5566,7 +5566,7 @@ Trace:
   Error: Command failed.
   Exit code: 1
   Command: sh
-  Arguments: -c jest auth.test.ts
+  Arguments: -c jest
   Directory: /Users/ayomide/Desktop/code/goziem/package_tracker_api
   Output:
   

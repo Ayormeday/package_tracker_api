@@ -1,8 +1,9 @@
 import { Server } from 'socket.io';
-import DeliveryModel from '../models/delivery';
 import * as DeliveryService from '../services/delivery';
 
 export const registerSocketEvents = (io: Server) => {
+  DeliveryService.setWebSocketServer(io); // Pass the io instance to the DeliveryService
+
   io.on('connection', (socket) => {
     console.log('New client connected');
 
@@ -14,14 +15,10 @@ export const registerSocketEvents = (io: Server) => {
     // Handle location changes
     socket.on('location_changed', async (data: { deliveryId: string; location: { lat: number; lng: number } }) => {
       const { deliveryId, location } = data;
-      
-      // Update the delivery's location in the database
-      const delivery = await DeliveryModel.findOneAndUpdate(
-        { deliveryId },
-        { location },
-        { new: true }
-      );
 
+      // Update the delivery's location in the database
+      const delivery = await DeliveryService.updateDeliveryLocation(deliveryId, location);
+      
       if (delivery) {
         // Broadcast the updated delivery details
         sendDeliveryUpdate(io, deliveryId, delivery);
@@ -29,30 +26,16 @@ export const registerSocketEvents = (io: Server) => {
     });
 
     // Handle status changes
-    socket.on('status_changed', async (data: { deliveryId: string; status: string }) => {
-      const { deliveryId, status } = data;
+    socket.on('status_changed', async (data: {
+      deliveryId: string;
+      status: "open" | "picked-up" | "in-transit" | "delivered" | "failed"
+    }) => {
+      const {
+        deliveryId, status } = data;
 
-      const delivery: any = await DeliveryService.getDeliveryById(deliveryId);
-      
-      if (delivery) {
-        // Update the status and set the appropriate timestamps
-        delivery.status = status;
-        switch (status) {
-          case 'picked-up':
-            delivery.pickupTime = new Date();
-            break;
-          case 'in-transit':
-            delivery.startTime = new Date();
-            break;
-          case 'delivered':
-          case 'failed':
-            delivery.endTime = new Date();
-            break;
-        }
-        
-        // Save the updated delivery
-        const updatedDelivery = await delivery.save();
+      const updatedDelivery = await DeliveryService.updateDelivery(deliveryId, status);
 
+      if (updatedDelivery) {
         // Broadcast the updated delivery details
         sendDeliveryUpdate(io, deliveryId, updatedDelivery);
       }

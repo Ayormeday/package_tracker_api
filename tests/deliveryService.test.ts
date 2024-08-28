@@ -141,7 +141,7 @@ describe('createDelivery', () => {
     });
   });
 
-describe('updateDelivery', () => {
+  describe('updateDelivery', () => {
     it('should update the delivery and return the updated data', async () => {
       const mockDelivery = {
         deliveryId: 'DEL00004',
@@ -158,7 +158,7 @@ describe('updateDelivery', () => {
   
       jest.spyOn(DeliveryModel, 'findOneAndUpdate').mockResolvedValue(updatedDelivery as any);
   
-      const result = await deliveryService.updateDelivery('DEL00004', { status: 'picked-up' });
+      const result = await deliveryService.updateDelivery('DEL00004', 'picked-up');
   
       expect(result).not.toBeNull();
       expect(result?.status).toEqual('picked-up');
@@ -169,7 +169,37 @@ describe('updateDelivery', () => {
         { new: true }
       );
     });
-});
+  });
+  
+  describe('updateDeliveryLocation', () => {
+    it('should update the delivery location and return the updated delivery', async () => {
+      const mockDelivery = {
+        deliveryId: 'DEL00006',
+        packageId: 'PKG00006',
+        location: { lat: 6.4281, lng: 3.4208 },
+        status: 'open',
+      };
+  
+      const updatedLocation = { lat: 6.5000, lng: 3.4500 };
+      const updatedDelivery = {
+        ...mockDelivery,
+        location: updatedLocation,
+      };
+  
+      jest.spyOn(DeliveryModel, 'findOneAndUpdate').mockResolvedValue(updatedDelivery as any);
+  
+      const result = await deliveryService.updateDeliveryLocation('DEL00006', updatedLocation);
+  
+      expect(result).not.toBeNull();
+      expect(result?.location).toEqual(updatedLocation);
+      expect(DeliveryModel.findOneAndUpdate).toHaveBeenCalledWith(
+        { deliveryId: 'DEL00006' },
+        { location: updatedLocation },
+        { new: true }
+      );
+    });
+  });
+  
   
 describe('deleteDelivery', () => {
     it('should delete the delivery and unset the activeDeliveryId in the package', async () => {

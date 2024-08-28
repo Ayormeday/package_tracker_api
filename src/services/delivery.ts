@@ -1,6 +1,13 @@
 import DeliveryModel, { IDelivery } from "../models/delivery";
 import PackageModel from '../models/package';
 import { generateDeliveryId } from '../utils/idGenerator';
+import { Server } from 'socket.io';
+
+let io: Server; 
+
+export const setWebSocketServer = (socketServer: Server) => {
+  io = socketServer;
+};
 
 const getAllDeliveries = async (): Promise<any[]> => {
   const deliveries = await DeliveryModel.find();
@@ -44,15 +51,45 @@ const createDelivery = async (deliveryData: Omit<IDelivery, 'deliveryId'>): Prom
 
 const updateDelivery = async (
   deliveryId: string,
-  updateData: Partial<IDelivery>
+ status: "open" | "picked-up" | "in-transit" | "delivered" | "failed"
 ): Promise<IDelivery | null> => {
-  if (updateData.status === "picked-up") {
+  const updateData: Partial<IDelivery> = { status };
+
+  if (status === "picked-up") {
     updateData.pickupTime = new Date();
+  } else if (status === "in-transit") {
+    updateData.startTime = new Date();
+  } else if (status === "delivered" || status === "failed") {
+    updateData.endTime = new Date();
   }
-  return await DeliveryModel.findOneAndUpdate({ deliveryId }, updateData, {
+
+  const updatedDelivery = await DeliveryModel.findOneAndUpdate({ deliveryId }, updateData, {
     new: true,
   });
+
+  if (updatedDelivery && io) {
+    io.to(deliveryId).emit('deliveryStatusUpdate', {
+      deliveryId: updatedDelivery.deliveryId,
+      status: updatedDelivery.status
+    });
+  }
+
+  return updatedDelivery;
 };
+
+const updateDeliveryLocation = async (
+  deliveryId: string,
+  location: { lat: number; lng: number }
+): Promise<IDelivery | null> => {
+  const updatedDelivery = await DeliveryModel.findOneAndUpdate(
+    { deliveryId },
+    { location },
+    { new: true }
+  );
+
+  return updatedDelivery;
+};
+
 
 const deleteDelivery = async (
   deliveryId: string
@@ -79,5 +116,6 @@ export {
   getDeliveryById,
   createDelivery,
   updateDelivery,
+  updateDeliveryLocation,
   deleteDelivery,
 };
